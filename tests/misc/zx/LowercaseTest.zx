@@ -1,0 +1,18 @@
+class LowercaseTest {
+    static function myFunction(x: Int): Int {
+        return x * 2
+    }
+    
+    static main() {
+        // This should remain a function call, not converted to 'new'
+        var result = myFunction(5)
+        trace("Function result: " + result)
+        
+        // Test that lowercase identifiers are not affected
+        var func = myFunction
+        var result2 = func(10)
+        trace("Function reference result: " + result2)
+        
+        trace("Lowercase test completed!")
+    }
+}

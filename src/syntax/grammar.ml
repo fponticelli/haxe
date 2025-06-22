@@ -1678,7 +1678,20 @@ and expr_next' ctx e1 s = match%parser s with
 		| _ -> die "" __LOC__)
 	| [ (Dot,p); [%let e = parse_field ctx e1 EFNormal p] ] -> e
 	| [ (QuestionDot,p); [%let e = parse_field ctx e1 EFSafe p] ] -> e
-	| [ (POpen,p1); [%let e = parse_call_params ctx (fun el p2 -> (ECall(e1,el)),punion (pos e1) p2) p1] ] -> expr_next ctx e s
+	| [ (POpen,p1); [%let e = parse_call_params ctx (fun el p2 ->
+		(* In .zx files, allow ClassName() syntax as shorthand for new ClassName() *)
+		if ctx.config.is_zx_file then
+			match fst e1 with
+			| EConst(Ident name) when not (is_lower_ident name) ->
+				(* Convert ClassName() to new ClassName() *)
+				let type_path = { tpackage = []; tname = name; tparams = []; tsub = None } in
+				let placed_type_path = make_ptp type_path (pos e1) in
+				(ENew(placed_type_path,el)),punion (pos e1) p2
+			| _ ->
+				(ECall(e1,el)),punion (pos e1) p2
+		else
+			(ECall(e1,el)),punion (pos e1) p2
+	) p1] ] -> expr_next ctx e s
 	| [ (BkOpen,p1); [%let e2 = secure_expr ctx] ] ->
 		let p2 = expect_unless_resume_p ctx BkClose s in
 		let e2 = check_signature_mark ctx e2 p1 p2 in

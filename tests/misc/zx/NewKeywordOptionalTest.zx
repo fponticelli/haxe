@@ -1,0 +1,38 @@
+class Person {
+    name: String
+    age: Int
+    
+    new(name: String, age: Int) {
+        this.name = name
+        this.age = age
+    }
+    
+    greet(): String {
+        return "Hello, I'm " + name + " and I'm " + age + " years old"
+    }
+}
+
+class NewKeywordOptionalTest {
+    static main() {
+        // Test with traditional 'new' keyword (should still work)
+        var person1 = new Person("Alice", 25)
+        trace("With 'new': " + person1.greet())
+        
+        // Test without 'new' keyword (new feature for .zx files)
+        var person2 = Person("Bob", 30)
+        trace("Without 'new': " + person2.greet())
+        
+        // Test with multiple constructor calls
+        var people = [
+            Person("Charlie", 35),
+            Person("Diana", 28),
+            new Person("Eve", 32)  // Mix both styles
+        ]
+        
+        for (person in people) {
+            trace(person.greet())
+        }
+        
+        trace("New keyword optional test completed successfully!")
+    }
+}

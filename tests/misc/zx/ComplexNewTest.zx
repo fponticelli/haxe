@@ -1,0 +1,52 @@
+class Point {
+    x: Float
+    y: Float
+    
+    new(x: Float, y: Float) {
+        this.x = x
+        this.y = y
+    }
+    
+    toString(): String {
+        return "(" + x + ", " + y + ")"
+    }
+}
+
+class Rectangle {
+    topLeft: Point
+    bottomRight: Point
+    
+    new(topLeft: Point, bottomRight: Point) {
+        this.topLeft = topLeft
+        this.bottomRight = bottomRight
+    }
+    
+    toString(): String {
+        return "Rectangle[" + topLeft.toString() + " to " + bottomRight.toString() + "]"
+    }
+}
+
+class ComplexNewTest {
+    static main() {
+        // Test nested constructor calls without 'new'
+        var rect1 = Rectangle(Point(0, 0), Point(10, 10))
+        trace("Rect1: " + rect1.toString())
+        
+        // Test mixing 'new' and no-'new' syntax
+        var rect2 = Rectangle(new Point(5, 5), Point(15, 15))
+        trace("Rect2: " + rect2.toString())
+        
+        // Test with function calls
+        var points = [
+            Point(1, 2),
+            Point(3, 4),
+            Point(5, 6)
+        ]
+        
+        for (point in points) {
+            trace("Point: " + point.toString())
+        }
+        
+        trace("Complex new test completed!")
+    }
+}
