@@ -1029,6 +1029,53 @@ and parse_class_field ctx tdecl s =
 				f_expr = e;
 			} in
 			("new",p1),punion p1 p2,FFun f,al,[]
+		| [ (Const (Ident "get"),p1); [%let prop_name = dollar_ident]; (POpen,_) ] when ctx.config.is_zx_file ->
+			(* .zx file: TypeScript-like getter syntax: get propertyName() { ... } *)
+			let _ = (match%parser s with
+				| [ (PClose,p) ] -> p
+				| [ ] -> error (Expected [")"]) (next_pos ctx s)
+			) in
+			let t = popt (parse_type_hint ctx) s in
+			let e, p2 = (match%parser s with
+				| [ [%let e = expr ctx] ] ->
+					ignore(semicolon_for_file ctx s);
+					Some e, pos e
+				| [ [%let p = semicolon_for_file ctx] ] -> None, p
+				| [ ] -> serror()
+			) in
+			let getter_name = ("get_" ^ (fst prop_name), snd prop_name) in
+			let f = {
+				f_params = [];
+				f_args = [];
+				f_type = t;
+				f_expr = e;
+			} in
+			(* Create the getter function *)
+			getter_name,punion p1 p2,FFun f,al,meta
+		| [ (Const (Ident "set"),p1); [%let prop_name = dollar_ident]; (POpen,_) ] when ctx.config.is_zx_file ->
+			(* .zx file: TypeScript-like setter syntax: set propertyName(value) { ... } *)
+			let args = psep_trailing Comma (parse_fun_param ctx) s in
+			let _ = (match%parser s with
+				| [ (PClose,p) ] -> p
+				| [ ] -> error (Expected [")"]) (next_pos ctx s)
+			) in
+			let t = popt (parse_type_hint ctx) s in
+			let e, p2 = (match%parser s with
+				| [ [%let e = expr ctx] ] ->
+					ignore(semicolon_for_file ctx s);
+					Some e, pos e
+				| [ [%let p = semicolon_for_file ctx] ] -> None, p
+				| [ ] -> serror()
+			) in
+			let setter_name = ("set_" ^ (fst prop_name), snd prop_name) in
+			let f = {
+				f_params = [];
+				f_args = args;
+				f_type = t;
+				f_expr = e;
+			} in
+			(* Create the setter function *)
+			setter_name,punion p1 p2,FFun f,al,meta
 		| [ [%let opt,name = questionable_dollar_ident ctx] ] when ctx.config.is_zx_file ->
 			(* .zx file: parse optional var/function syntax *)
 			let meta = check_optional opt name in

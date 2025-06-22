@@ -1,0 +1,68 @@
+// Test TypeScript-like getter/setter syntax in .zx files
+class GetterSetterTest {
+    private _name: String
+    private _age: Int
+
+    new(name: String, age: Int) {
+        this._name = name
+        this._age = age
+    }
+
+    // TypeScript-like getter syntax
+    get name(): String {
+        trace("Getting name")
+        return this._name
+    }
+
+    // TypeScript-like setter syntax
+    set name(value: String) {
+        trace("Setting name to: " + value)
+        this._name = value
+    }
+
+    // TypeScript-like getter for age
+    get age(): Int {
+        trace("Getting age")
+        return this._age
+    }
+
+    // TypeScript-like setter for age
+    set age(value: Int) {
+        trace("Setting age to: " + value)
+        if (value >= 0) {
+            this._age = value
+        } else {
+            trace("Invalid age: " + value)
+        }
+    }
+
+    // Regular method for comparison
+    getInfo(): String {
+        return "Name: " + this._name + ", Age: " + this._age
+    }
+
+    static main() {
+        var person = new GetterSetterTest("Alice", 25)
+
+        // Test getter access using function syntax (current implementation)
+        trace("Initial name (function): " + person.get_name())
+        trace("Initial age (function): " + person.get_age())
+
+        // Test setter access using function syntax (current implementation)
+        person.set_name("Bob")
+        person.set_age(30)
+
+        // Test getter access again
+        trace("Updated name (function): " + person.get_name())
+        trace("Updated age (function): " + person.get_age())
+
+        // Test invalid age
+        person.set_age(-5)
+        trace("Age after invalid set: " + person.get_age())
+
+        // Test regular method
+        trace("Info: " + person.getInfo())
+
+        trace("Getter/setter test completed successfully!")
+    }
+}

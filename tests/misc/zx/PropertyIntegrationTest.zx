@@ -1,0 +1,73 @@
+// Test integration of TypeScript-like getter/setter syntax with Haxe properties
+class PropertyIntegrationTest {
+    private _value: Int
+    private _name: String
+
+    // Traditional Haxe property using the TypeScript-style getter/setter functions
+    var value(get, set): Int
+
+    new(initialValue: Int, initialName: String) {
+        this._value = initialValue
+        this._name = initialName
+    }
+
+    // TypeScript-like getter syntax - creates get_value() function
+    get value(): Int {
+        trace("TypeScript-style getter called for value")
+        return this._value
+    }
+
+    // TypeScript-like setter syntax - creates set_value() function
+    set value(newValue: Int) {
+        trace("TypeScript-style setter called for value: " + newValue)
+        if (newValue >= 0) {
+            this._value = newValue
+        } else {
+            trace("Invalid value, keeping current: " + this._value)
+        }
+        return this._value
+    }
+
+    // TypeScript-like getter for name (no corresponding property declaration)
+    get name(): String {
+        trace("TypeScript-style getter called for name")
+        return this._name
+    }
+
+    // TypeScript-like setter for name (no corresponding property declaration)
+    set name(newName: String) {
+        trace("TypeScript-style setter called for name: " + newName)
+        this._name = newName
+        return this._name
+    }
+
+    // Regular method for comparison
+    getDescription(): String {
+        return "Value: " + this._value + ", Name: " + this._name
+    }
+
+    static main() {
+        var obj = new PropertyIntegrationTest(42, "Test")
+
+        trace("=== Testing Haxe property with TypeScript-style getter/setter ===")
+        // This uses the traditional Haxe property syntax, which calls our TypeScript-style functions
+        trace("Initial value via property: " + obj.value)
+        obj.value = 100
+        trace("Updated value via property: " + obj.value)
+
+        // Try to set invalid value
+        obj.value = -10
+        trace("Value after invalid set: " + obj.value)
+
+        trace("\n=== Testing TypeScript-style getter/setter functions directly ===")
+        // This calls the functions directly
+        trace("Name via function: " + obj.get_name())
+        obj.set_name("Updated Name")
+        trace("Updated name via function: " + obj.get_name())
+
+        trace("\n=== Final state ===")
+        trace("Description: " + obj.getDescription())
+
+        trace("Property integration test completed successfully!")
+    }
+}
