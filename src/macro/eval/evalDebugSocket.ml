@@ -485,7 +485,7 @@ module ValueCompletion = struct
 		let offset = column + (String.length "class X{static function main() ") - 1 (* this is retarded *) in
 		DisplayPosition.display_position#set {p with pmin = offset; pmax = offset};
 		begin try
-			let e = parse_expr ctx config text p in
+			let e = parse_expr ctx (config false) text p in
 			let e = ExprPreprocessing.find_before_pos com.parser_state.was_auto_triggered DMDefault e in
 			save();
 			let rec loop e = match fst e with

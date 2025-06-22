@@ -1,0 +1,42 @@
+class OptionalKeywordsTest {
+    // Test optional var keyword
+    name: String;
+    age: Int;
+    private secret: String;
+    static count: Int;
+    
+    // Test optional function keyword
+    new() {
+        name = "Test";
+        age = 25;
+        secret = "hidden";
+    }
+    
+    getName(): String {
+        return name;
+    }
+    
+    setAge(newAge: Int): Void {
+        age = newAge;
+    }
+    
+    private getSecret(): String {
+        return secret;
+    }
+    
+    static getCount(): Int {
+        return count;
+    }
+    
+    static main() {
+        var test = new OptionalKeywordsTest();
+        trace("Name: " + test.getName());
+        test.setAge(30);
+        trace("Age: " + test.age);
+        
+        OptionalKeywordsTest.count = 1;
+        trace("Count: " + OptionalKeywordsTest.getCount());
+        
+        trace("Optional keywords test completed successfully!");
+    }
+}

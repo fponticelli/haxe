@@ -1,0 +1,6 @@
+// Test default public visibility in .zx interfaces
+interface TestInterface {
+    function getValue(): Int;
+    function setValue(value: Int): Void;
+    var property: String;
+}

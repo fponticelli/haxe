@@ -1,0 +1,63 @@
+// Test .zx file format with all syntax features
+class ZxSyntaxTest {
+    // Test default public visibility for variables
+    name: String;
+    var age: Int;  // explicit var keyword still works
+    private secret: String;  // explicit private modifier
+    static count: Int;  // static with default public
+    
+    // Test default public visibility for functions
+    new() {
+        name = "ZxTest";
+        age = 25;
+        secret = "hidden";
+    }
+    
+    getName(): String {
+        return name;
+    }
+    
+    function getAge(): Int {  // explicit function keyword still works
+        return age;
+    }
+    
+    private getSecret(): String {  // explicit private modifier
+        return secret;
+    }
+    
+    static getCount(): Int {  // static with default public
+        return count;
+    }
+    
+    // Test complex method signatures
+    processData(data: Array<String>, callback: String -> Void): Array<Int> {
+        var result = [];
+        for (i in 0...data.length) {
+            result.push(i);
+            callback(data[i]);
+        }
+        return result;
+    }
+    
+    static main() {
+        var test = new ZxSyntaxTest();
+        
+        // Test accessing members with default public visibility
+        test.name = "Updated";
+        test.age = 30;
+        
+        // Test calling methods with default public visibility
+        trace("Name: " + test.getName());
+        trace("Age: " + test.getAge());
+        
+        // Test static members
+        ZxSyntaxTest.count = 42;
+        trace("Count: " + ZxSyntaxTest.getCount());
+        
+        // Test complex method
+        var result = test.processData(["a", "b"], function(s) trace("Processing: " + s));
+        trace("Result: " + result);
+        
+        trace("ZX syntax test completed successfully!");
+    }
+}

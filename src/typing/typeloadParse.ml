@@ -88,7 +88,7 @@ let parse_hook = ref parse_file
 
 let resolve_module_file com m remap p =
 	let forbid = ref false in
-	let compose_path =
+	let compose_path_base =
 		(match m with
 		| [] , name -> name
 		| x :: l , name ->
@@ -99,9 +99,14 @@ let resolve_module_file com m remap p =
 				with Not_found -> x
 			) in
 			String.concat "/" (x :: l) ^ "/" ^ name
-		) ^ ".hx"
+		)
 	in
-	let rfile = com.class_paths#find_file compose_path in
+	(* Try .zx first, then .hx for backward compatibility *)
+	let rfile = try
+		com.class_paths#find_file (compose_path_base ^ ".zx")
+	with Not_found ->
+		com.class_paths#find_file (compose_path_base ^ ".hx")
+	in
 	begin match rfile.class_path#file_kind with
 		| FFile -> (match ExtString.String.lowercase (snd m) with
 			| "con" | "aux" | "prn" | "nul" | "com1" | "com2" | "com3" | "lpt1" | "lpt2" | "lpt3" when Sys.os_type = "Win32" ->

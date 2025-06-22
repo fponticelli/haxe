@@ -1,0 +1,11 @@
+# Test compilation of .zx files
+-cp .
+-main ZxSyntaxTest
+-js zx-syntax-test.js
+
+--next
+
+# Test interoperability between .hx and .zx files
+-cp .
+-main ZxInteropTest
+-js zx-interop-test.js

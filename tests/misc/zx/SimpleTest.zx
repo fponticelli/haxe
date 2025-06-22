@@ -1,0 +1,17 @@
+class SimpleTest {
+  var x: Int;
+
+  function new() {
+    x = 42;
+  }
+
+  function test(): Void {
+    trace("test: " + x);
+  }
+
+  static function main() {
+    var s = new SimpleTest();
+    s.test();
+    trace("Success! Default public visibility is working in .zx files");
+  }
+}

@@ -992,6 +992,63 @@ and parse_class_field ctx tdecl s =
 			end
 		| [ [%let f = parse_function_field ctx doc meta al] ] ->
 			f
+		| [ (Kwd New,p1); (POpen,_) ] when ctx.config.is_zx_file ->
+			(* .zx file: constructor without 'function' keyword: new(...) *)
+			let args = psep_trailing Comma (parse_fun_param ctx) s in
+			let _ = (match%parser s with
+				| [ (PClose,p) ] -> p
+				| [ ] -> error (Expected [")"]) (next_pos ctx s)
+			) in
+			let t = popt (parse_type_hint ctx) s in
+			let e, p2 = (match%parser s with
+				| [ [%let e = expr ctx] ] ->
+					ignore(semicolon ctx s);
+					Some e, pos e
+				| [ [%let p = semicolon ctx] ] -> None, p
+				| [ ] -> serror()
+			) in
+			let f = {
+				f_params = [];
+				f_args = args;
+				f_type = t;
+				f_expr = e;
+			} in
+			("new",p1),punion p1 p2,FFun f,al,[]
+		| [ [%let opt,name = questionable_dollar_ident ctx] ] when ctx.config.is_zx_file ->
+			(* .zx file: parse optional var/function syntax *)
+			let meta = check_optional opt name in
+			begin match%parser s with
+			| [ (POpen,_) ] ->
+				(* Function declaration without 'function' keyword: name(...) *)
+				let args = psep_trailing Comma (parse_fun_param ctx) s in
+				let _ = (match%parser s with
+					| [ (PClose,p) ] -> p
+					| [ ] -> error (Expected [")"]) (next_pos ctx s)
+				) in
+				let t = popt (parse_type_hint ctx) s in
+				let e, p2 = (match%parser s with
+					| [ [%let e = expr ctx] ] ->
+						ignore(semicolon ctx s);
+						Some e, pos e
+					| [ [%let p = semicolon ctx] ] -> None, p
+					| [ ] -> serror()
+				) in
+				let f = {
+					f_params = [];
+					f_args = args;
+					f_type = t;
+					f_expr = e;
+				} in
+				name,punion (snd name) p2,FFun f,al,meta
+			| [ (DblDot,_); [%let t = parse_complex_type ctx] ] ->
+				(* Variable declaration without 'var' keyword: name: Type *)
+				let e,p2 = parse_var_field_assignment ctx s in
+				name,punion (snd name) p2,FVar (Some t,e),al,meta
+			| [ ] ->
+				(* Variable declaration without type: name; *)
+				let e,p2 = parse_var_field_assignment ctx s in
+				name,punion (snd name) p2,FVar (None,e),al,meta
+			end
 		| [ ] ->
 			begin match List.rev al with
 				| [] -> raise Stream.Failure
@@ -1015,6 +1072,8 @@ and parse_class_field ctx tdecl s =
 				| _ -> serror()
 			end
 		) in
+		(* Add public access if no access modifier is present and we're parsing a .zx file *)
+		let al = if ctx.config.is_zx_file && not (List.exists (function (APublic,_) | (APrivate,_) -> true | _ -> false) al) then (APublic,null_pos) :: al else al in
 		let pos = match al with
 			| [] -> pos
 			| (_,p) :: _ -> punion p pos

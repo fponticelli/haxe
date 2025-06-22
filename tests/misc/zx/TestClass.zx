@@ -1,0 +1,43 @@
+class TestClass {
+    // Test variables with default public visibility in .zx files
+    var name: String;
+    var age: Int;
+
+    // Test variables with explicit private modifier
+    private var secret: String;
+
+    // Test functions with default public visibility in .zx files
+    function getName(): String {
+        return name;
+    }
+
+    function setName(newName: String): Void {
+        name = newName;
+    }
+
+    // Test functions with explicit private modifier
+    private function getSecret(): String {
+        return secret;
+    }
+
+    // Test static members with default public visibility
+    static var staticVar: Int;
+
+    static function getStaticVar(): Int {
+        return staticVar;
+    }
+
+    // Test constructor (should still use function keyword)
+    public function new(name: String, age: Int) {
+        this.name = name;
+        this.age = age;
+        this.secret = "hidden";
+    }
+
+    // Test mixing def and traditional syntax
+    public var traditionalVar: String;
+
+    public function traditionalMethod(): Void {
+        trace("Traditional method");
+    }
+}

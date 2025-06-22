@@ -1,0 +1,42 @@
+// Advanced test for default public visibility in .zx files
+class AdvancedTest {
+    // Test variables with different access modifiers
+    var publicField: String;
+    private var privateField: Int;
+    static var staticField: Bool;
+
+    // Test functions with various signatures
+    function getValue(): Int {
+        return privateField;
+    }
+
+    function setValue(value: Int): Void {
+        privateField = value;
+    }
+
+    var property: String;
+
+    // Test functions with complex types
+    function complexMethod(arr: Array<String>, callback: String -> Void): Array<Int> {
+        var result = [];
+        for (i in 0...arr.length) {
+            result.push(i);
+            callback(arr[i]);
+        }
+        return result;
+    }
+
+    // Test mixing def and traditional syntax
+    public var traditionalVar: Float;
+
+    public function traditionalFunc(): String {
+        return "traditional";
+    }
+
+    public function new() {
+        publicField = "public";
+        privateField = 42;
+        property = "property";
+        traditionalVar = 3.14;
+    }
+}

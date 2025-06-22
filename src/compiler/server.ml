@@ -247,7 +247,9 @@ let check_module sctx com m_path m_extra p =
 	in
 	let check_module_shadowing paths m_path m_extra =
 		List.iter (fun dir ->
-			let file = (dir.c_path ^ (snd m_path)) ^ ".hx" in
+			let file_hx = (dir.c_path ^ (snd m_path)) ^ ".hx" in
+			let file_zx = (dir.c_path ^ (snd m_path)) ^ ".zx" in
+			let file = if Sys.file_exists file_zx then file_zx else file_hx in
 			if Sys.file_exists file then begin
 				let time = file_time file in
 				if time > m_extra.m_time then begin
@@ -330,7 +332,8 @@ let check_module sctx com m_path m_extra p =
 		let check () =
 			try
 				check_module_path();
-				if not (has_policy NoFileSystemCheck) || Path.file_extension (Path.UniqueKey.lazy_path m_extra.m_file) <> "hx" then check_file();
+				let ext = Path.file_extension (Path.UniqueKey.lazy_path m_extra.m_file) in
+				if not (has_policy NoFileSystemCheck) || (ext <> "hx" && ext <> "zx") then check_file();
 				if full_typing com m_extra then check_dependencies();
 				None
 			with

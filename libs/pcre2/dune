@@ -4,6 +4,7 @@
 	(name pcre2)
 	(foreign_stubs
 		(language c)
-		(names pcre2_stubs))
+		(names pcre2_stubs)
+		(flags -I/opt/homebrew/opt/pcre2/include))
 	(wrapped false)
 )

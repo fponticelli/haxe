@@ -445,7 +445,7 @@ match Array.to_list (Sys.argv) with
 				if Option.is_some (Sys.getenv_opt "STATICLINK") && os <> "macosx" then
 					Printf.printf "-cclib \"-Wl,-Bstatic -lpcre2-8 -lz -lmbedtls -lmbedx509 -lmbedcrypto -Wl,-Bdynamic \""
 				else
-					Printf.printf "-cclib -lpcre2-8 -cclib -lz -cclib -lmbedtls -cclib -lmbedx509 -cclib -lmbedcrypto";
+					Printf.printf "-cclib -L/opt/homebrew/opt/pcre2/lib -cclib -L/opt/homebrew/opt/mbedtls/lib -cclib -lpcre2-8 -cclib -lz -cclib -lmbedtls -cclib -lmbedx509 -cclib -lmbedcrypto";
 		end);
 		if os = "macosx" then Printf.printf " -cclib \"-framework Security -framework CoreFoundation\"";
 		Printf.printf ")";

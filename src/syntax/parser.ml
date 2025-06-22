@@ -79,6 +79,7 @@ type parser_config = {
 	display_mode : DisplayTypes.DisplayMode.t;
 	was_auto_triggered : bool;
 	special_identifier_files : (Path.UniqueKey.t,string) ThreadSafeHashtbl.t option;
+	is_zx_file : bool;
 }
 
 type parser_ctx = {
@@ -140,13 +141,14 @@ let create_context lexer_ctx config in_macro code = {
 	config;
 }
 
-let create_config defines in_display in_display_file display_mode was_auto_triggered special_identifier_files = {
+let create_config defines in_display in_display_file display_mode was_auto_triggered special_identifier_files is_zx_file = {
 	defines;
 	in_display;
 	in_display_file;
 	display_mode;
 	was_auto_triggered;
 	special_identifier_files;
+	is_zx_file;
 }
 
 let s_decl_flag = function

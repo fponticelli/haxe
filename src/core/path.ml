@@ -12,8 +12,8 @@ let get_path_parts f =
 		the weird "path part" entity.
 	*)
 	let l = String.length f in
-	if l > 3 && (String.sub f (l-3) 3) = ".hx" then
-		let f = String.sub f 0 (l-3) in (* strip the .hx *)
+	if (l > 3 && (String.sub f (l-3) 3) = ".hx") || (l > 3 && (String.sub f (l-3) 3) = ".zx") then
+		let f = String.sub f 0 (l-3) in (* strip the .hx or .zx *)
 		ExtString.String.nsplit (String.concat "/" (ExtString.String.nsplit f "\\")) "/" (* TODO: wouldn't it be faster to Str.split here? *)
 	else
 		ExtString.String.nsplit f "."
