@@ -23,6 +23,7 @@ type keyword =
 	| Function
 	| Class
 	| Var
+	| Let
 	| If
 	| Else
 	| While
@@ -526,6 +527,7 @@ let s_keyword = function
 	| Class -> "class"
 	| Static -> "static"
 	| Var -> "var"
+	| Let -> "let"
 	| If -> "if"
 	| Else -> "else"
 	| While -> "while"

@@ -1241,6 +1241,16 @@ and parse_block_var ctx = function%parser
 		match%parser s with
 		| [ [%let vl = parse_var_decls ctx true p1]; [%let p2 = semicolon_for_file ctx] ] ->
 			(vl,punion p1 p2)
+	| [ (Kwd Let,p1); [%s s] ] ->
+		(* 'let' keyword is only allowed in .zx files *)
+		if not ctx.config.is_zx_file then
+			syntax_error ctx (Custom "'let' keyword is only supported in .zx files") s ([], p1)
+		else begin
+			check_redundant_var ctx p1 s;
+			match%parser s with
+			| [ [%let vl = parse_var_decls ctx true p1]; [%let p2 = semicolon_for_file ctx] ] ->
+				(vl,punion p1 p2)
+		end
 		| [ ] ->
 			serror();
 
@@ -1512,6 +1522,18 @@ and expr (ctx : parser_ctx) s = match%parser s with
 			| [ ] ->
 				serror()
 		end
+	| [ (Kwd Let,p1) ] ->
+		(* 'let' keyword is only allowed in .zx files *)
+		if not ctx.config.is_zx_file then
+			syntax_error ctx (Custom "'let' keyword is only supported in .zx files") s (EVars [],p1)
+		else begin
+			check_redundant_var ctx p1 s;
+			match%parser s with
+			| [ [%let v = parse_var_decl ctx true] ] ->
+				(EVars [v],p1)
+			| [ ] ->
+				serror()
+		end
 	| [ (Const c,p) ] -> expr_next ctx (EConst c,p) s
 	| [ (Kwd This,p) ] -> expr_next ctx (EConst (Ident "this"),p) s
 	| [ (Kwd Abstract,p) ] -> expr_next ctx (EConst (Ident "abstract"),p) s
@@ -1758,6 +1780,18 @@ and expr_or_var ctx = function%parser
 	| [ (Kwd Final,p1); [%s s] ] ->
 		check_redundant_var ctx p1 s;
 		begin match%parser s with
+			| [ dollar_ident as np; ] ->
+				EVars [mk_evar ~final:true np],punion p1 (snd np)
+			| [ ] ->
+				serror()
+		end
+	| [ (Kwd Let,p1); [%s s] ] ->
+		(* 'let' keyword is only allowed in .zx files *)
+		if not ctx.config.is_zx_file then
+			syntax_error ctx (Custom "'let' keyword is only supported in .zx files") s (EVars [],p1)
+		else begin
+			check_redundant_var ctx p1 s;
+			match%parser s with
 			| [ dollar_ident as np; ] ->
 				EVars [mk_evar ~final:true np],punion p1 (snd np)
 			| [ ] ->

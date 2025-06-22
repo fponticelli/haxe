@@ -1,0 +1,11 @@
+class LetImmutableTest {
+    static main() {
+        // Test that 'let' variables are immutable (should fail to compile)
+        let name = "Alice"
+        trace("Original name: " + name)
+        
+        // This should cause a compilation error because 'let' variables are immutable
+        name = "Bob"  // This should fail
+        trace("Modified name: " + name)
+    }
+}

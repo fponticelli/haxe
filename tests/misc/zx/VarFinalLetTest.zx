@@ -1,0 +1,21 @@
+class VarFinalLetTest {
+    static main() {
+        // Test that all three variable declaration types work in .zx files
+        
+        // 'var' - mutable
+        var mutableVar = "I can change"
+        trace("Original mutable: " + mutableVar)
+        mutableVar = "I changed!"
+        trace("Modified mutable: " + mutableVar)
+        
+        // 'final' - immutable (traditional Haxe syntax)
+        final immutableFinal = "I cannot change"
+        trace("Final variable: " + immutableFinal)
+        
+        // 'let' - immutable (JavaScript-like syntax for .zx files)
+        let immutableLet = "I also cannot change"
+        trace("Let variable: " + immutableLet)
+        
+        trace("All variable types work correctly in .zx files!")
+    }
+}
