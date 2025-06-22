@@ -117,6 +117,21 @@ let semicolon ctx s =
 		| [ ] ->
 			syntax_error ctx Missing_semicolon s (next_pos ctx s)
 
+(* Optional semicolon for .zx files - semicolons are always optional *)
+let optional_semicolon ctx s =
+	match%parser s with
+	| [ (Semicolon,p) ] -> p
+	| [ ] ->
+		(* For .zx files, always return the position of the last token if no semicolon *)
+		snd (last_token ctx s)
+
+(* Choose the appropriate semicolon function based on file type *)
+let semicolon_for_file ctx s =
+	if ctx.config.is_zx_file then
+		optional_semicolon ctx s
+	else
+		semicolon ctx s
+
 let check_redundant_var ctx p1 = function%parser
 	| [ (Kwd Var),p2; [%s s] ] ->
 		syntax_error ctx (Custom "`final var` is not supported, use `final` instead") ~pos:(Some (punion p1 p2)) s ();
@@ -130,7 +145,7 @@ let rec parse_file (ctx : parser_ctx) s =
 	| [ (Kwd Package,_); parse_package as pack ] ->
 		begin match%parser s with
 		| [ (Const(Ident _),p) ] when pack = [] -> error (Custom "Package name must start with a lowercase character") p
-		| [ [%let psem = semicolon ctx]; [%let l = parse_type_decls ctx TCAfterImport psem.pmax pack []] ] -> pack , l
+		| [ [%let psem = semicolon_for_file ctx]; [%let l = parse_type_decls ctx TCAfterImport psem.pmax pack []] ] -> pack , l
 		end
 	| [ [%let l = parse_type_decls ctx TCBeforePackage (-1) [] []] ] -> [] , l
 
@@ -240,9 +255,9 @@ and parse_type_decl ctx mode s =
 		| [ (Kwd Function,p1); dollar_ident as name; [%let pl = parse_constraint_params ctx]; (POpen,_); [%let args = psep_trailing Comma (parse_fun_param ctx)]; (PClose,_); [%let t = popt (parse_type_hint ctx)] ] ->
 			let e, p2 = (match%parser s with
 				| [ [%let e = expr ctx] ] ->
-					ignore(semicolon ctx s);
+					ignore(semicolon_for_file ctx s);
 					Some e, pos e
-				| [ [%let p = semicolon ctx] ] -> None, p
+				| [ [%let p = semicolon_for_file ctx] ] -> None, p
 				| [ ] -> serror()
 			) in
 			let f = {
@@ -376,7 +391,7 @@ and parse_import' ctx s p1 =
 			| [ (Binop OpMult,_) ] ->
 				List.rev acc, IAll
 			| [ ] ->
-				ignore(popt (semicolon ctx) s);
+				ignore(popt (semicolon_for_file ctx) s);
 				syntax_error ctx (Expected ["identifier"]) s (List.rev acc,INormal)
 			end
 		| [ (Kwd In,_); (Const (Ident name),pname) ] ->
@@ -898,7 +913,7 @@ and parse_enum ctx s =
 		) in
 		let t = popt (parse_type_hint ctx) s in
 		let p2 = (match%parser s with
-			| [ [%let p = semicolon ctx] ] -> p
+			| [ [%let p = semicolon_for_file ctx] ] -> p
 			| [ ] -> serror()
 		) in
 		{
@@ -919,9 +934,9 @@ and parse_function_field ctx doc meta al = function%parser
 	| [ (Kwd Function,p1); parse_fun_name as name; [%let pl = parse_constraint_params ctx]; (POpen,_); [%let args = psep_trailing Comma (parse_fun_param ctx)]; (PClose,_); [%let t = popt (parse_type_hint ctx)]; [%s s] ] ->
 		let e, p2 = (match%parser s with
 			| [ [%let e = expr ctx] ] ->
-				ignore(semicolon ctx s);
+				ignore(semicolon_for_file ctx s);
 				Some e, pos e
-			| [ [%let p = semicolon ctx] ] -> None, p
+			| [ [%let p = semicolon_for_file ctx] ] -> None, p
 			| [ ] -> serror()
 		) in
 		let f = {
@@ -943,10 +958,10 @@ and parse_var_field_assignment ctx = function%parser
 				| [ ] -> pos e
 			in
 			Some e,p2
-		| [ [%let e = expr ctx]; [%let p2 = semicolon ctx] ] -> Some e , p2
+		| [ [%let e = expr ctx]; [%let p2 = semicolon_for_file ctx] ] -> Some e , p2
 		| [ ] -> serror()
 		end
-	| [ [%let p2 = semicolon ctx] ] -> None , p2
+	| [ [%let p2 = semicolon_for_file ctx] ] -> None , p2
 	| [ ] -> serror()
 
 and parse_class_field ctx tdecl s =
@@ -1002,9 +1017,9 @@ and parse_class_field ctx tdecl s =
 			let t = popt (parse_type_hint ctx) s in
 			let e, p2 = (match%parser s with
 				| [ [%let e = expr ctx] ] ->
-					ignore(semicolon ctx s);
+					ignore(semicolon_for_file ctx s);
 					Some e, pos e
-				| [ [%let p = semicolon ctx] ] -> None, p
+				| [ [%let p = semicolon_for_file ctx] ] -> None, p
 				| [ ] -> serror()
 			) in
 			let f = {
@@ -1028,9 +1043,9 @@ and parse_class_field ctx tdecl s =
 				let t = popt (parse_type_hint ctx) s in
 				let e, p2 = (match%parser s with
 					| [ [%let e = expr ctx] ] ->
-						ignore(semicolon ctx s);
+						ignore(semicolon_for_file ctx s);
 						Some e, pos e
-					| [ [%let p = semicolon ctx] ] -> None, p
+					| [ [%let p = semicolon_for_file ctx] ] -> None, p
 					| [ ] -> serror()
 				) in
 				let f = {
@@ -1194,7 +1209,7 @@ and block2 ctx name ident p s =
 	| [ ] ->
 		let f s =
 			let e = expr_next ctx (EConst ident,p) s in
-			let _ = semicolon ctx s in
+			let _ = semicolon_for_file ctx s in
 			e
 		in
 		let el,_ = block_with_pos' ctx [] f p s in
@@ -1219,12 +1234,12 @@ and block_with_pos ctx acc p s =
 	block_with_pos' ctx acc (parse_block_elt ctx) p s
 
 and parse_block_var ctx = function%parser
-	| [ (Kwd Var,p1); [%let vl = parse_var_decls ctx false p1]; [%let p2 = semicolon ctx] ] ->
+	| [ (Kwd Var,p1); [%let vl = parse_var_decls ctx false p1]; [%let p2 = semicolon_for_file ctx] ] ->
 		(vl,punion p1 p2)
 	| [ (Kwd Final,p1); [%s s] ] ->
 		check_redundant_var ctx p1 s;
 		match%parser s with
-		| [ [%let vl = parse_var_decls ctx true p1]; [%let p2 = semicolon ctx] ] ->
+		| [ [%let vl = parse_var_decls ctx true p1]; [%let p2 = semicolon_for_file ctx] ] ->
 			(vl,punion p1 p2)
 		| [ ] ->
 			serror();
@@ -1232,11 +1247,11 @@ and parse_block_var ctx = function%parser
 and parse_block_elt ctx s = match%parser s with
 	| [ [%let vl,p = parse_block_var ctx] ] ->
 		(EVars vl,p)
-	| [ (Kwd Function,p1); [%let e = parse_function ctx p1 false]; [%let _s = semicolon ctx] ]  -> e
+	| [ (Kwd Function,p1); [%let e = parse_function ctx p1 false]; [%let _s = semicolon_for_file ctx] ]  -> e
 	| [ (Kwd Inline,p1) ] ->
 		begin match%parser s with
-		| [ (Kwd Function,_); [%let e = parse_function ctx p1 true]; [%let _s = semicolon ctx] ] -> e
-		| [ [%let e = secure_expr ctx]; [%let _s = semicolon ctx] ] -> make_meta Meta.Inline [] e p1
+		| [ (Kwd Function,_); [%let e = parse_function ctx p1 true]; [%let _s = semicolon_for_file ctx] ] -> e
+		| [ [%let e = secure_expr ctx]; [%let _s = semicolon_for_file ctx] ] -> make_meta Meta.Inline [] e p1
 		| [ ] -> serror()
 		end
 	| [ (Kwd Static,p) ] ->
@@ -1254,7 +1269,7 @@ and parse_block_elt ctx s = match%parser s with
 			| [ ] -> ()
 		end;
 		e
-	| [ [%let e = expr ctx]; [%let _s = semicolon ctx] ] -> e
+	| [ [%let e = expr ctx]; [%let _s = semicolon_for_file ctx] ] -> e
 
 and parse_obj_decl ctx name e p0 s =
 	let make_obj_decl el p1 =

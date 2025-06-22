@@ -1,0 +1,35 @@
+class ComplexSemicolonTest {
+    name: String
+    age: Int
+    
+    new(name: String, age: Int) {
+        this.name = name
+        this.age = age
+    }
+    
+    getName(): String {
+        return name
+    }
+    
+    setAge(newAge: Int): Void {
+        age = newAge
+    }
+    
+    greet(): Void {
+        trace("Hello, I'm " + name + " and I'm " + age + " years old")
+    }
+    
+    static main() {
+        var person = new ComplexSemicolonTest("Alice", 25)
+        person.greet()
+        person.setAge(26)
+        trace("After birthday: " + person.getName() + " is now " + person.age)
+        
+        var numbers = [1, 2, 3, 4, 5]
+        for (num in numbers) {
+            trace("Number: " + num)
+        }
+        
+        trace("Complex semicolon test completed successfully!")
+    }
+}

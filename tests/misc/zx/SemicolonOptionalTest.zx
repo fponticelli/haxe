@@ -1,0 +1,9 @@
+class SemicolonOptionalTest {
+    static main() {
+        var x = 42
+        var y = "hello"
+        trace("x = " + x)
+        trace("y = " + y)
+        trace("Semicolons are optional in .zx files!")
+    }
+}

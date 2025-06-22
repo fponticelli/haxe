@@ -1,0 +1,26 @@
+// Test .zx file with optional semicolons
+class SemicolonTest {
+    name: String
+    age: Int
+    
+    new() {
+        name = "Test"
+        age = 25
+    }
+    
+    getName(): String {
+        return name
+    }
+    
+    setAge(newAge: Int): Void {
+        age = newAge
+    }
+    
+    static main() {
+        var test = new SemicolonTest()
+        test.setAge(30)
+        trace("Name: " + test.getName())
+        trace("Age: " + test.age)
+        trace("Semicolon test completed!")
+    }
+}
