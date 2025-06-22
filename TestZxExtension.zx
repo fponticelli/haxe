@@ -1,0 +1,42 @@
+class TestZxExtension {
+    // Test ZX syntax features with VSCode extension
+
+    // Public by default - no 'public' keyword needed
+    static function main() {
+        trace("Testing .zx file support in VSCode!")
+
+        // Optional semicolons
+        let message = "Hello from ZX format"
+        trace(message)
+
+        // Optional 'new' keyword
+        let arr = new Array<String>()
+        arr.push("test")
+
+        // TypeScript-style getter/setter
+        let obj = new TestObject()
+        obj.value = 42
+        trace("Value: " + obj.value)
+
+        // Switch expression with optional 'case'
+        let result = switch obj.value {
+            42 => "The answer!"
+            _ => "Something else"
+        }
+        trace(result)
+
+        trace("ZX extension test completed!")
+    }
+}
+
+class TestObject {
+    var _value: Int = 0
+
+    get value() {
+        return _value
+    }
+
+    set value(v: Int) {
+        _value = v
+    }
+}

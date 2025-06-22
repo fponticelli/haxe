@@ -1,0 +1,32 @@
+class SimpleZxTest {
+    static function main() {
+        trace("Testing .zx file support in VSCode!")
+
+        // Optional semicolons
+        let message = "Hello from ZX format"
+        trace(message)
+
+        // Test getter/setter
+        let obj = new TestObj()
+        obj.set_value(42)
+        trace("Value: " + obj.get_value())
+
+        trace("ZX extension test completed!")
+    }
+}
+
+class TestObj {
+    var _value: Int = 0
+
+    function new() {
+        _value = 0
+    }
+
+    get value() {
+        return _value
+    }
+
+    set value(v: Int) {
+        _value = v
+    }
+}

@@ -4,30 +4,30 @@ class LetKeywordTest {
         let name = "Alice"
         let age = 25
         let isActive = true
-        
+
         trace("Name: " + name)
         trace("Age: " + age)
         trace("Active: " + isActive)
-        
+
         // Test 'let' with different types
         let numbers = [1, 2, 3, 4, 5]
         let person = Person("Bob", 30)
-        
+
         trace("Numbers: " + numbers.join(", "))
         trace("Person: " + person.greet())
-        
+
         // Test 'let' in block scope
         if (true) {
             let blockVar = "I'm in a block"
             trace("Block variable: " + blockVar)
         }
-        
+
         // Test 'let' in for loop
         for (i in 0...3) {
             let loopVar = "Loop iteration " + i
             trace(loopVar)
         }
-        
+
         trace("Let keyword test completed successfully!")
     }
 }
@@ -35,13 +35,13 @@ class LetKeywordTest {
 class Person {
     name: String
     age: Int
-    
+
     new(name: String, age: Int) {
         this.name = name
         this.age = age
     }
-    
+
     greet(): String {
-        return "Hello, I'm " + name + " and I'm " + age + " years old"
+        return 'Hello, I\'m $name and I\'m $age years old'
     }
 }

@@ -1,0 +1,10 @@
+# Haxe compilation configuration for ZX testing
+-cp .
+-main Main
+--interp
+
+# Alternative targets for testing
+# -js bin/main.js
+# -neko bin/main.n
+# -java bin/java
+# -cs bin/cs

@@ -2,6 +2,7 @@
 	"files.associations": {
 		"*.mly": "ocaml",
 		"*.ml": "ocaml",
+		"*.zx": "haxe",
 		"Makefile.*": "makefile"
 	},
 	"[ocaml]": {
@@ -14,6 +15,10 @@
 		"ocaml"
 	],
 	"haxe.diagnosticsPathFilter": "${workspaceRoot}/std",
+	"haxe.executable": {
+		"path": "/Users/franco/projects/haxe/haxe"
+	},
+	"haxe.enableCompilationServer": true,
 	"npm.autoDetect": "off",
 	"json.schemas": [
 		{

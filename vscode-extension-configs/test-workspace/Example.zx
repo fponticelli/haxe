@@ -1,0 +1,53 @@
+class Example {
+    // ZX features demonstration
+    
+    // Public by default, no 'public' keyword needed
+    function test() {
+        // Optional semicolons
+        let x = 42
+        let message = "Hello from .zx file"
+        trace(message)
+        
+        // Optional 'new' keyword
+        let array = Array<Int>()
+        array.push(x)
+        
+        // Switch expression with optional 'case'
+        let result = switch x {
+            42 => "The answer"
+            _ => "Something else"
+        }
+        trace(result)
+        
+        // Optional parentheses in catch
+        try {
+            throw "test error"
+        } catch {
+            trace("Caught error without variable access")
+        }
+        
+        // Local function with optional 'function' keyword
+        localFunc() {
+            trace("Local function called")
+        }
+        localFunc()
+    }
+    
+    // TypeScript-style getter and setter
+    var _value: Int = 0
+    
+    get value() {
+        return _value
+    }
+    
+    set value(v: Int) {
+        _value = v
+    }
+    
+    // Let keyword prevents reassignment
+    function demonstrateLet() {
+        let constant = "cannot be reassigned"
+        // constant = "this would cause an error"
+        trace(constant)
+    }
+}

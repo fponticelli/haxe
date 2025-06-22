@@ -1,0 +1,149 @@
+{
+  "name": "vshaxe",
+  "displayName": "Haxe",
+  "description": "Haxe language support",
+  "version": "2.30.0",
+  "publisher": "nadako",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "keywords": [
+    "haxe",
+    "zx"
+  ],
+  "activationEvents": [
+    "onLanguage:haxe"
+  ],
+  "main": "./out/src/Main.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "haxe",
+        "aliases": [
+          "Haxe",
+          "haxe"
+        ],
+        "extensions": [
+          ".hx",
+          ".zx"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "haxe",
+        "scopeName": "source.hx",
+        "path": "./syntaxes/haxe.tmLanguage.json"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Haxe configuration",
+      "properties": {
+        "haxe.enableCompilationServer": {
+          "description": "Use Haxe compilation server",
+          "type": "boolean",
+          "default": true
+        },
+        "haxe.displayConfigurations": {
+          "description": "Array of configurations for the Haxe completion server",
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "description": "A name for this configuration",
+                "type": "string"
+              },
+              "args": {
+                "description": "Array of arguments passed to the Haxe completion server",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "haxe.restartLanguageServer",
+        "title": "Restart Language Server",
+        "category": "Haxe"
+      },
+      {
+        "command": "haxe.selectDisplayConfiguration",
+        "title": "Select Display Configuration",
+        "category": "Haxe"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "haxe.restartLanguageServer",
+          "when": "editorLangId == haxe"
+        },
+        {
+          "command": "haxe.selectDisplayConfiguration",
+          "when": "editorLangId == haxe"
+        }
+      ]
+    },
+    "problemMatchers": [
+      {
+        "name": "haxe-absolute",
+        "owner": "haxe",
+        "fileLocation": "absolute",
+        "pattern": {
+          "regexp": "^(.+):(\\d+): (?:lines \\d+-(\\d+)|character(?:s (\\d+)-| )(\\d+)) : (?:(Warning) : )?(.*)$",
+          "file": 1,
+          "line": 2,
+          "endLine": 3,
+          "column": 4,
+          "endColumn": 5,
+          "severity": 6,
+          "message": 7
+        }
+      },
+      {
+        "name": "haxe",
+        "owner": "haxe",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}"
+        ],
+        "pattern": {
+          "regexp": "^(.+):(\\d+): (?:lines \\d+-(\\d+)|character(?:s (\\d+)-| )(\\d+)) : (?:(Warning) : )?(.*)$",
+          "file": 1,
+          "line": 2,
+          "endLine": 3,
+          "column": 4,
+          "endColumn": 5,
+          "severity": 6,
+          "message": 7
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^8.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "@types/vscode": "^1.74.0",
+    "typescript": "^4.9.4"
+  }
+}
