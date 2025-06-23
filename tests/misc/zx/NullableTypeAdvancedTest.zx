@@ -1,0 +1,86 @@
+// Advanced test for nullable type syntax T? in .zx files
+class NullableTypeAdvancedTest {
+    static main() {
+        trace("=== Advanced Nullable Type Test ===");
+        
+        // Test 1: Function types with nullable parameters
+        trace("\n1. Function types:");
+        var func: (Int?) -> String? = processValue;
+        trace("func(null): " + func(null));
+        trace("func(42): " + func(42));
+        
+        // Test 2: Generic types with nullable parameters
+        trace("\n2. Generic types:");
+        var map: Map<String, Int?> = new Map();
+        map.set("key1", null);
+        map.set("key2", 100);
+        trace("map.get('key1'): " + map.get("key1"));
+        trace("map.get('key2'): " + map.get("key2"));
+        
+        // Test 3: Typedef with nullable types
+        trace("\n3. Typedef:");
+        var person: Person = {
+            name: "John",
+            age: null,
+            email: "john@example.com"
+        };
+        trace("person.name: " + person.name);
+        trace("person.age: " + person.age);
+        trace("person.email: " + person.email);
+        
+        // Test 4: Array of nullable types
+        trace("\n4. Array of nullable types:");
+        var numbers: Array<Int?> = [1, null, 3, null, 5];
+        for (i in 0...numbers.length) {
+            trace("numbers[" + i + "]: " + numbers[i]);
+        }
+        
+        // Test 5: Nullable function return types
+        trace("\n5. Nullable function returns:");
+        var result1 = findValue([1, 2, 3], 2);
+        trace("findValue([1,2,3], 2): " + result1);
+        
+        var result2 = findValue([1, 2, 3], 5);
+        trace("findValue([1,2,3], 5): " + result2);
+        
+        // Test 6: Chained nullable access (if supported)
+        trace("\n6. Nullable chaining:");
+        var obj: Container? = new Container();
+        trace("obj != null: " + (obj != null));
+        if (obj != null) {
+            trace("obj.value: " + obj.value);
+        }
+        
+        obj = null;
+        trace("obj after null assignment: " + obj);
+        
+        trace("\n=== Advanced nullable type tests completed! ===");
+    }
+    
+    static function processValue(input: Int?): String? {
+        return input != null ? "Value: " + input : null;
+    }
+    
+    static function findValue(arr: Array<Int>, target: Int): Int? {
+        for (i in 0...arr.length) {
+            if (arr[i] == target) {
+                return i;
+            }
+        }
+        return null;
+    }
+}
+
+typedef Person = {
+    name: String,
+    age: Int?,
+    email: String?
+}
+
+class Container {
+    public var value: String?;
+    
+    public function new() {
+        this.value = "container value";
+    }
+}

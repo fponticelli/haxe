@@ -1,0 +1,95 @@
+// Test combining nullable types with other .zx features
+class ZxNullableCombinedTest {
+    static main() {
+        trace("=== Combined .zx Features with Nullable Types ===");
+
+        // Test 1: Nullable types with pipeline operator
+        trace("\n1. Nullable types with pipeline operator:");
+        var value: Int? = 42;
+        var result = value |> processNullable;
+        trace("42 |> processNullable = " + result);
+
+        value = null;
+        result = value |> processNullable;
+        trace("null |> processNullable = " + result);
+
+        // Test 2: Nullable types with let keyword
+        trace("\n2. Nullable types with let:");
+        let immutableNullable: String? = "immutable";
+        trace("immutableNullable: " + immutableNullable);
+
+        // Test 3: Nullable types with getter/setter syntax
+        trace("\n3. Nullable types with getter/setter:");
+        var obj = new TestObject();
+        trace("obj.nullableProperty: " + obj.nullableProperty);
+        obj.nullableProperty = "set value";
+        trace("obj.nullableProperty after set: " + obj.nullableProperty);
+
+        // Test 4: Nullable types with optional semicolons
+        trace("\n4. Nullable types with optional semicolons:")
+        var a: Int? = 1
+        var b: String? = "test"
+        trace("a: " + a + ", b: " + b)
+
+        // Test 5: Nullable types with optional 'new' keyword
+        trace("\n5. Nullable types with optional 'new':")
+        var container: Container? = Container()
+        trace("container created without 'new': " + (container != null))
+
+        // Test 6: Nullable types in function parameters with pipeline
+        trace("\n6. Complex combination:")
+        var numbers: Array<Int?> = [1, null, 3, null, 5]
+        var filtered = numbers |> filterNulls
+        var processed = filtered |> sumArray
+        trace("Filtered and summed: " + processed)
+
+        trace("\n=== Combined tests completed! ===");
+    }
+
+    static function processNullable(value: Int?): String {
+        return value != null ? "Processed: " + value : "Null value";
+    }
+
+    static function filterNulls(arr: Array<Int?>): Array<Int> {
+        var result: Array<Int> = []
+        for (item in arr) {
+            if (item != null) {
+                result.push(item)
+            }
+        }
+        return result
+    }
+
+    static function sumArray(arr: Array<Int>): Int {
+        var sum = 0
+        for (item in arr) {
+            sum += item
+        }
+        return sum
+    }
+}
+
+class TestObject {
+    var _nullableValue: String? = null
+
+    public var nullableProperty(get, set): String?
+
+    get nullableProperty(): String? {
+        return _nullableValue
+    }
+
+    set nullableProperty(value: String?): String? {
+        _nullableValue = value
+        return value
+    }
+
+    public function new() {}
+}
+
+class Container {
+    public var data: String?
+
+    public function new() {
+        this.data = "container data"
+    }
+}

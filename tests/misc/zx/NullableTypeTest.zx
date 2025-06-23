@@ -1,0 +1,73 @@
+// Test file for nullable type syntax T? in .zx files
+class NullableTypeTest {
+    static main() {
+        trace("=== Nullable Type Syntax Test ===");
+
+        // Test 1: Basic nullable types
+        trace("\n1. Basic nullable types:");
+        var nullableInt: Int? = null;
+        trace("nullableInt: " + nullableInt);
+
+        nullableInt = 42;
+        trace("nullableInt after assignment: " + nullableInt);
+
+        var nullableString: String? = "hello";
+        trace("nullableString: " + nullableString);
+
+        // Test 2: Function parameters with nullable types
+        trace("\n2. Function parameters:");
+        processNullableInt(null);
+        processNullableInt(123);
+
+        // Test 3: Function return types
+        trace("\n3. Function return types:");
+        let result1 = getNullableString(true);
+        trace("getNullableString(true): " + result1);
+
+        let result2 = getNullableString(false);
+        trace("getNullableString(false): " + result2);
+
+        // Test 4: Complex nullable types
+        trace("\n4. Complex nullable types:");
+        var nullableArray: Array<Int>? = null;
+        trace("nullableArray: " + nullableArray);
+
+        nullableArray = [1, 2, 3];
+        trace("nullableArray after assignment: " + nullableArray);
+
+        // Test 5: Nested nullable types
+        trace("\n5. Nested nullable types:");
+        var nestedNullable: Array<String?>? = null;
+        trace("nestedNullable: " + nestedNullable);
+
+        nestedNullable = ["hello", null, "world"];
+        trace("nestedNullable after assignment: " + nestedNullable);
+
+        // Test 6: Class fields with nullable types
+        trace("\n6. Class fields:");
+        var obj = new TestClass();
+        trace("obj.nullableField: " + obj.nullableField);
+        obj.nullableField = "assigned";
+        trace("obj.nullableField after assignment: " + obj.nullableField);
+
+        trace("\n=== All nullable type tests completed! ===");
+    }
+
+    static function processNullableInt(value: Int?) {
+        if (value == null) {
+            trace("Received null value");
+        } else {
+            trace("Received value: " + value);
+        }
+    }
+
+    static function getNullableString(returnValue: Bool): String? {
+        return returnValue ? "not null" : null;
+    }
+}
+
+class TestClass {
+    public var nullableField: String? = null;
+
+    public function new() {}
+}

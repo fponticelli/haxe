@@ -841,6 +841,10 @@ and parse_complex_type_next ctx (t : type_hint) s =
 			CTIntersection ([t;t2,p2]),punion (pos t) p2
 	in
 	match%parser s with
+	| [ (Question,pq) ] when ctx.config.is_zx_file ->
+		(* Transform T? to Null<T> in .zx files only *)
+		let null_path = make_ptp (mk_type_path ~params:[TPType t] ([],"Null")) (punion (pos t) pq) in
+		CTPath null_path, punion (pos t) pq
 	| [ (Arrow,pa) ] ->
 		begin match%parser s with
 		| [ [%let t2,p2 = parse_complex_type ctx] ] -> make_fun t2 p2
