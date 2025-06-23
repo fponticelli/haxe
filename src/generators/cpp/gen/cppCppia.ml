@@ -332,7 +332,9 @@ let cppia_op_info = function
   | IaBinOp (OpAssignOp OpGt)
   | IaBinOp (OpAssignOp OpLt)
   | IaBinOp (OpAssignOp (OpAssignOp _))
-  | IaBinOp (OpAssignOp OpArrow) ->
+  | IaBinOp (OpAssignOp OpArrow)
+  | IaBinOp (OpAssignOp OpPipe)
+  | IaBinOp OpPipe ->
       die "" __LOC__
   | IaTCast -> ("TCAST", 221)
 

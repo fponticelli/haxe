@@ -149,6 +149,7 @@ let rec generate_binop ctx op =
 	| OpArrow -> "OpArrow",None
 	| OpIn -> "OpIn",None
 	| OpNullCoal -> "OpNullCoal",None
+	| OpPipe -> "OpPipe",None
 	in
 	generate_adt ctx (Some (["haxe";"macro"],"Binop")) name args
 

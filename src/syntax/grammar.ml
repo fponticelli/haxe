@@ -22,6 +22,8 @@ open Reification
 open Parser
 open DisplayPosition
 
+
+
 let popt f = function%parser
 	| [ f as v ] -> Some v
 	| [ ] -> None
@@ -1782,6 +1784,63 @@ and expr_next' ctx e1 s = match%parser s with
 			make_binop OpGte e1 (secure_expr ctx s)
 		| [ [%let e2 = secure_expr ctx] ] ->
 			make_binop OpGt e1 e2)
+
+	| [ (Binop OpPipe,_); [%let e2 = secure_expr ctx] ] when ctx.config.is_zx_file ->
+		(* Special handling for pipeline operator in .zx files *)
+		let handle_pipeline_op e1 e2 =
+			(* Check if any transformation occurred (i.e., if there were _ placeholders) *)
+			let has_placeholder =
+				let rec check_placeholder expr =
+					match fst expr with
+					| EConst (Ident "_") -> true
+					| ECall (func_expr, args) ->
+						check_placeholder func_expr || List.exists check_placeholder args
+					| EField (e, _, _) -> check_placeholder e
+					| EArray (e1, e2) -> check_placeholder e1 || check_placeholder e2
+					| EBinop (_, e1, e2) -> check_placeholder e1 || check_placeholder e2
+					| EUnop (_, _, e) -> check_placeholder e
+					| EParenthesis e -> check_placeholder e
+					| _ -> false
+				in
+				check_placeholder e2
+			in
+			if has_placeholder then
+				(* Transform placeholders *)
+				let rec transform_pipeline_expr lhs_expr rhs_expr =
+					let rec transform_expr expr =
+						match fst expr with
+						| EConst (Ident "_") -> lhs_expr
+						| ECall (func_expr, args) ->
+							let transformed_func = transform_expr func_expr in
+							let transformed_args = List.map transform_expr args in
+							(ECall (transformed_func, transformed_args), snd expr)
+						| EField (e, field, kind) ->
+							let transformed_e = transform_expr e in
+							(EField (transformed_e, field, kind), snd expr)
+						| EArray (e1, e2) ->
+							let transformed_e1 = transform_expr e1 in
+							let transformed_e2 = transform_expr e2 in
+							(EArray (transformed_e1, transformed_e2), snd expr)
+						| EBinop (op, e1, e2) ->
+							let transformed_e1 = transform_expr e1 in
+							let transformed_e2 = transform_expr e2 in
+							(EBinop (op, transformed_e1, transformed_e2), snd expr)
+						| EUnop (op, flag, e) ->
+							let transformed_e = transform_expr e in
+							(EUnop (op, flag, transformed_e), snd expr)
+						| EParenthesis e ->
+							let transformed_e = transform_expr e in
+							(EParenthesis transformed_e, snd expr)
+						| _ -> expr
+					in
+					transform_expr rhs_expr
+				in
+				transform_pipeline_expr e1 e2
+			else
+				(* No placeholders found, treat as simple function call: e |> f becomes f(e) *)
+				(ECall (e2, [e1]), punion (pos e1) (pos e2))
+		in
+		handle_pipeline_op e1 e2
 	| [ (Binop op,_); [%let e2 = secure_expr ctx] ] -> make_binop op e1 e2
 	| [ (Spread,_); [%let e2 = secure_expr ctx] ] -> make_binop OpInterval e1 e2
 	| [ (Unop op,p) ] when is_postfix op ->

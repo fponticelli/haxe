@@ -164,6 +164,7 @@ enum abstract JsonBinopKind<T>(String) {
 	var OpArrow;
 	var OpIn;
 	var OpNullCoal;
+	var OpPipe;
 }
 
 typedef JsonBinop<T> = {

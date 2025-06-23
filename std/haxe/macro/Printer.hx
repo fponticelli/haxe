@@ -79,6 +79,7 @@ class Printer {
 			case OpArrow: "=>";
 			case OpIn: "in";
 			case OpNullCoal: "??";
+			case OpPipe: "|>";
 			case OpAssignOp(op):
 				printBinop(op) + "=";
 		}

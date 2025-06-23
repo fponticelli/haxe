@@ -1805,7 +1805,7 @@ and gen_binop ctx retval op e1 e2 t p =
 		gen_op A3OLt
 	| OpLte ->
 		gen_op A3OLte
-	| OpInterval | OpArrow | OpIn | OpNullCoal ->
+	| OpInterval | OpArrow | OpIn | OpNullCoal | OpPipe ->
 		die "" __LOC__
 
 and gen_expr ctx retval e =

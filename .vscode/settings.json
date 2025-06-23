@@ -16,7 +16,7 @@
 	],
 	"haxe.diagnosticsPathFilter": "${workspaceRoot}/std",
 	"haxe.executable": {
-		"path": "/Users/franco/projects/haxe/haxe"
+		"path": "~/projects/haxe/haxe"
 	},
 	"haxe.enableCompilationServer": true,
 	"npm.autoDetect": "off",

@@ -405,6 +405,8 @@ let make_binop ctx op e1 e2 is_assign_op p =
 		raise_typing_error "Unexpected =>" p
 	| OpIn ->
 		raise_typing_error "Unexpected in" p
+	| OpPipe ->
+		raise_typing_error "Unexpected |> (pipeline operator should be transformed during parsing)" p
 	| OpNullCoal
 	| OpAssign
 	| OpAssignOp _ ->

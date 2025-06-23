@@ -1,0 +1,198 @@
+class PipelineOperatorTest {
+    static function main() {
+        testBasicPipeline();
+        testPlaceholderPipeline();
+        testMultiplePlaceholders();
+        testNestedPipeline();
+        testComplexExpressions();
+        testMethodChaining();
+        testFunctionComposition();
+        testEdgeCases();
+        trace("All pipeline operator tests passed!");
+    }
+
+    // Basic pipeline without placeholders
+    static function testBasicPipeline() {
+        // Simple function call: value |> func becomes func(value)
+        var result = 5 |> double;
+        assert(result == 10, "Basic pipeline failed");
+
+        // Multiple pipeline calls
+        var result2 = 3 |> double |> triple;
+        assert(result2 == 18, "Multiple pipeline failed"); // 3 * 2 * 3 = 18
+
+        // Pipeline with string
+        var result3 = "hello" |> toUpperCase;
+        assert(result3 == "HELLO", "String pipeline failed");
+    }
+
+    // Pipeline with placeholder syntax
+    static function testPlaceholderPipeline() {
+        // Using placeholder for more complex function calls
+        var result = 10 |> add(_, 5);
+        assert(result == 15, "Placeholder pipeline failed");
+
+        // Multiple arguments with placeholder
+        var result2 = 3 |> multiply(_, 4);
+        assert(result2 == 12, "Multiple args placeholder failed");
+
+        // Placeholder in different positions
+        var result3 = 2 |> subtract(10, _);
+        assert(result3 == 8, "Placeholder position failed"); // 10 - 2 = 8
+    }
+
+    // Multiple placeholders in same expression
+    static function testMultiplePlaceholders() {
+        // Multiple placeholders should all be replaced with the same value
+        var result = 5 |> addSelf(_, _);
+        assert(result == 10, "Multiple placeholders failed"); // 5 + 5 = 10
+
+        // Placeholder in nested calls
+        var result2 = 3 |> complexCall(_, double(_));
+        assert(result2 == 9, "Nested placeholder failed"); // 3 + (3 * 2) = 9
+    }
+
+    // Nested pipeline operations
+    static function testNestedPipeline() {
+        // Pipeline within pipeline
+        var result = 2 |> (double(_) |> triple);
+        assert(result == 12, "Nested pipeline failed"); // (2 * 2) * 3 = 12
+
+        // Complex nesting
+        var result2 = 1 |> add(_, 2) |> multiply(_, 3);
+        assert(result2 == 9, "Complex nesting failed"); // (1 + 2) * 3 = 9
+    }
+
+    // Complex expressions with pipeline
+    static function testComplexExpressions() {
+        // Pipeline with array access
+        var arr = [1, 2, 3, 4, 5];
+        var result = 2 |> arr[_];
+        assert(result == 3, "Array access pipeline failed");
+
+        // Pipeline with field access
+        var obj = { value: 42 };
+        var result2 = obj |> getField(_, "value");
+        assert(result2 == 42, "Field access pipeline failed");
+
+        // Pipeline with conditional
+        var result3 = 5 |> (_ > 3 ? double(_) : triple(_));
+        assert(result3 == 10, "Conditional pipeline failed");
+    }
+
+    // Method chaining style
+    static function testMethodChaining() {
+        // Simulating method chaining with pipeline
+        var result = "hello world" 
+            |> split(_, " ")
+            |> join(_, "-")
+            |> toUpperCase(_);
+        assert(result == "HELLO-WORLD", "Method chaining failed");
+
+        // Pipeline with object methods
+        var calculator = new Calculator();
+        var result2 = 10 
+            |> calculator.add(_, 5)
+            |> calculator.multiply(_, 2);
+        assert(result2 == 30, "Object method pipeline failed"); // (10 + 5) * 2 = 30
+    }
+
+    // Function composition
+    static function testFunctionComposition() {
+        // Compose multiple functions
+        var compose = function(x) return x |> double |> triple |> addOne;
+        var result = compose(2);
+        assert(result == 19, "Function composition failed"); // ((2 * 2) * 3) + 1 = 19
+
+        // Pipeline in lambda
+        var pipeline = (x) -> x |> double |> (_ + 1);
+        var result2 = pipeline(5);
+        assert(result2 == 11, "Lambda pipeline failed"); // (5 * 2) + 1 = 11
+    }
+
+    // Edge cases and error conditions
+    static function testEdgeCases() {
+        // Pipeline with null
+        var result = null |> handleNull;
+        assert(result == "null", "Null pipeline failed");
+
+        // Pipeline with complex expressions
+        var result2 = (3 + 2) |> double;
+        assert(result2 == 10, "Expression pipeline failed");
+
+        // Pipeline with parentheses
+        var result3 = 4 |> (double(_) + 1);
+        assert(result3 == 9, "Parentheses pipeline failed"); // (4 * 2) + 1 = 9
+    }
+
+    // Helper functions for testing
+    static function double(x: Int): Int {
+        return x * 2;
+    }
+
+    static function triple(x: Int): Int {
+        return x * 3;
+    }
+
+    static function add(a: Int, b: Int): Int {
+        return a + b;
+    }
+
+    static function multiply(a: Int, b: Int): Int {
+        return a * b;
+    }
+
+    static function subtract(a: Int, b: Int): Int {
+        return a - b;
+    }
+
+    static function addSelf(a: Int, b: Int): Int {
+        return a + b;
+    }
+
+    static function complexCall(a: Int, b: Int): Int {
+        return a + b;
+    }
+
+    static function addOne(x: Int): Int {
+        return x + 1;
+    }
+
+    static function toUpperCase(s: String): String {
+        return s.toUpperCase();
+    }
+
+    static function split(s: String, delimiter: String): Array<String> {
+        return s.split(delimiter);
+    }
+
+    static function join(arr: Array<String>, separator: String): String {
+        return arr.join(separator);
+    }
+
+    static function getField(obj: Dynamic, field: String): Dynamic {
+        return Reflect.field(obj, field);
+    }
+
+    static function handleNull(x: Dynamic): String {
+        return x == null ? "null" : Std.string(x);
+    }
+
+    static function assert(condition: Bool, message: String) {
+        if (!condition) {
+            throw new haxe.Exception("Assertion failed: " + message);
+        }
+    }
+}
+
+class Calculator {
+    public function new() {}
+
+    public function add(a: Int, b: Int): Int {
+        return a + b;
+    }
+
+    public function multiply(a: Int, b: Int): Int {
+        return a * b;
+    }
+}

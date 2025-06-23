@@ -2666,7 +2666,7 @@ and eval_expr ctx e =
 					free ctx r;
 					arithbinop r r b;
 					r))
-		| OpInterval | OpArrow | OpIn | OpNullCoal ->
+		| OpInterval | OpArrow | OpIn | OpNullCoal | OpPipe ->
 			die "" __LOC__)
 	| TUnop (Not,_,v) ->
 		let tmp = alloc_tmp ctx HBool in

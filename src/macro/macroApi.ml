@@ -254,6 +254,7 @@ let rec encode_binop op =
 	| OpArrow -> 22, []
 	| OpIn -> 23, []
 	| OpNullCoal -> 24, []
+	| OpPipe -> 25, []
 	in
 	encode_enum IBinop tag pl
 
@@ -716,6 +717,7 @@ let rec decode_op op =
 	| 22,[] -> OpArrow
 	| 23,[] -> OpIn
 	| 24,[] -> OpNullCoal
+	| 25,[] -> OpPipe
 	| _ -> raise Invalid_expr
 
 let decode_unop op =

@@ -414,7 +414,7 @@ let find_class_implementation func tcpp_class =
   in
 
   match find tcpp_class with
-  | Some { cf_type = TFun (args, ret) } -> 
+  | Some { cf_type = TFun (args, ret) } ->
     cpp_tfun_signature false args ret
   | _ ->
     ""
@@ -1458,6 +1458,7 @@ let gen_cpp_ast_expression_tree ctx class_name func_name function_args
     | OpArrow -> "->"
     | OpIn -> " in "
     | OpNullCoal -> "??"
+    | OpPipe -> "|>"
     | OpAssign | OpAssignOp _ -> abort "Unprocessed OpAssign" pos
 
   and gen_closure closure =
@@ -1612,7 +1613,7 @@ let generate_boot ctx boot_enums boot_classes nonboot_classes init_classes (slot
   if newScriptable then (
     output_boot "#include <hx/Scriptable.h>\n";
 
-    
+
 
     let funcs = StringMap.bindings slots.hash in
     let sorted = List.sort (fun (_, id1) (_, id2) -> id1 - id2) funcs in

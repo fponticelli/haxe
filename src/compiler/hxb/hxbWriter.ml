@@ -29,6 +29,7 @@ let rec binop_index op = match op with
 	| OpArrow -> 21
 	| OpIn -> 22
 	| OpNullCoal -> 23
+	| OpPipe -> 24
 	| OpAssignOp op -> 30 + binop_index op
 
 let unop_index op flag = match op,flag with

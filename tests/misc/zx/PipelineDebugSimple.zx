@@ -1,0 +1,27 @@
+// Simple test to debug pipeline chaining
+class PipelineDebugSimple {
+    static main() {
+        // Test 1: Simple pipeline (works)
+        let result1 = 5 |> double;
+        trace("Test 1: 5 |> double = " + result1); // Should be 10
+
+        // Test 2: Manual chaining (works)
+        let temp = 2 |> double; // Should be 4
+        let result2 = temp |> add(_, 1); // Should be 5
+        trace("Test 2: Manual chaining = " + result2);
+
+        // Test 3: Try with parentheses to force left-associativity
+        let result3 = (2 |> double) |> add(_, 1);
+        trace("Test 3: (2 |> double) |> add(_, 1) = " + result3); // Should be 5
+
+        trace("Simple debug tests completed!");
+    }
+
+    static double(x: Int): Int {
+        return x * 2;
+    }
+
+    static add(a: Int, b: Int): Int {
+        return a + b;
+    }
+}

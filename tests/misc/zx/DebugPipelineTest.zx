@@ -1,0 +1,36 @@
+// Debug test to understand pipeline operator parsing
+class DebugPipelineTest {
+    static main() {
+        // Test 1: Simple pipeline without chaining
+        let result1 = 5 |> double;
+        trace("Test 1: " + result1); // Should be 10
+
+        // Test 2: Simple pipeline with placeholder
+        let result2 = 3 |> add(_, 7);
+        trace("Test 2: " + result2); // Should be 10
+
+        // Test 3: Two separate pipeline operations (not chained)
+        let temp = 2 |> double; // Should be 4
+        let result3 = temp |> add(_, 1); // Should be 5
+        trace("Test 3: " + result3); // Should be 5
+
+        // Test 4: Chained version with parentheses (works)
+        let result4 = (2 |> double) |> add(_, 1);
+        trace("Test 4: " + result4); // Should be 5 ((2 * 2) + 1)
+
+        // Test 5: Manual chaining as workaround
+        let temp2 = 2 |> double;
+        let result5 = temp2 |> add(_, 1) |> add(3, _) |> double;
+        trace("Test 5: " + result5); // Should be 5
+
+        trace("Debug tests completed!");
+    }
+
+    static double(x: Int): Int {
+        return x * 2;
+    }
+
+    static add(a: Int, b: Int): Int {
+        return a + b;
+    }
+}

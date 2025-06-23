@@ -293,19 +293,20 @@ let rev_concat s sl = String.concat s (List.rev sl)
 let precedence op =
 	let left = true and right = false in
 	match op with
-	| OpIn -> 0, right
-	| OpMod -> 1, left
-	| OpMult | OpDiv -> 2, left
-	| OpAdd | OpSub -> 3, left
-	| OpShl | OpShr | OpUShr -> 4, left
-	| OpOr | OpAnd | OpXor -> 5, left
-	| OpNullCoal -> 6, left
-	| OpEq | OpNotEq | OpGt | OpLt | OpGte | OpLte -> 7, left
-	| OpInterval -> 8, left
-	| OpBoolAnd -> 9, left
-	| OpBoolOr -> 10, left
-	| OpArrow -> 11, right
-	| OpAssign | OpAssignOp _ -> 12, right
+	| OpPipe -> 15, left
+	| OpIn -> 1, right
+	| OpMod -> 2, left
+	| OpMult | OpDiv -> 3, left
+	| OpAdd | OpSub -> 4, left
+	| OpShl | OpShr | OpUShr -> 5, left
+	| OpOr | OpAnd | OpXor -> 6, left
+	| OpNullCoal -> 7, left
+	| OpEq | OpNotEq | OpGt | OpLt | OpGte | OpLte -> 8, left
+	| OpInterval -> 9, left
+	| OpBoolAnd -> 10, left
+	| OpBoolOr -> 11, left
+	| OpArrow -> 12, right
+	| OpAssign | OpAssignOp _ -> 13, right
 
 let is_higher_than_ternary = function
 	| OpAssign | OpAssignOp _ | OpArrow -> false

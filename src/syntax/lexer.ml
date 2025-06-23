@@ -710,6 +710,7 @@ let rec token ctx lexbuf =
 	| "?." -> mk lexbuf QuestionDot
 	| "%" -> mk lexbuf (Binop OpMod)
 	| "&" -> mk lexbuf (Binop OpAnd)
+	| "|>" -> mk lexbuf (Binop OpPipe)
 	| "|" -> mk lexbuf (Binop OpOr)
 	| "^" -> mk lexbuf (Binop OpXor)
 	| "+" -> mk lexbuf (Binop OpAdd)

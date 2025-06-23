@@ -1,0 +1,46 @@
+// Verbose test to understand what's happening with pipeline parsing
+class PipelineDebugVerbose {
+    static main() {
+        trace("=== Pipeline Debug Verbose ===");
+        
+        // Test 1: Simple cases that work
+        trace("\n1. Simple cases:");
+        let result1 = 5 |> double;
+        trace("5 |> double = " + result1); // Should be 10
+        
+        let result2 = 3 |> add(_, 7);
+        trace("3 |> add(_, 7) = " + result2); // Should be 10
+        
+        // Test 2: What happens with function references
+        trace("\n2. Function reference behavior:");
+        let doubleFunc = double;
+        trace("doubleFunc type: " + Type.typeof(doubleFunc));
+        
+        // Test 3: Manual step-by-step chaining
+        trace("\n3. Manual chaining:");
+        let step1 = 2 |> double; // This should work: double(2) = 4
+        trace("step1 = 2 |> double = " + step1);
+        
+        let step2 = step1 |> add(_, 1); // This should work: add(4, 1) = 5
+        trace("step2 = step1 |> add(_, 1) = " + step2);
+        
+        // Test 4: What the problematic expression would be if it worked
+        trace("\n4. Expected behavior:");
+        trace("2 |> double |> add(_, 1) should equal " + step2);
+        
+        // Test 5: Try to understand the parsing issue
+        trace("\n5. Understanding the issue:");
+        trace("The expression '2 |> double |> add(_, 1)' is being parsed as:");
+        trace("'2 |> (double |> add(_, 1))' instead of '(2 |> double) |> add(_, 1)'");
+        
+        trace("\n=== Debug completed ===");
+    }
+
+    static double(x: Int): Int {
+        return x * 2;
+    }
+
+    static add(a: Int, b: Int): Int {
+        return a + b;
+    }
+}

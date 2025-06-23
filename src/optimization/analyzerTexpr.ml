@@ -502,7 +502,8 @@ module Fusion = struct
 		| OpInterval
 		| OpIn
 		| OpNullCoal
-		| OpArrow ->
+		| OpArrow
+		| OpPipe ->
 			false
 
 	let use_assign_op com op e1 e2 e3 =

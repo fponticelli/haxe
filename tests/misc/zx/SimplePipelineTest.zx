@@ -1,0 +1,42 @@
+// Simple test to verify basic pipeline operator functionality
+class SimplePipelineTest {
+    static function main() {
+        // Test 1: Basic pipeline without placeholder
+        var result1 = 5 |> double;
+        if (result1 != 10) {
+            throw "Test 1 failed: expected 10, got " + result1;
+        }
+
+        // Test 2: Pipeline with placeholder
+        var result2 = 3 |> add(_, 7);
+        if (result2 != 10) {
+            throw "Test 2 failed: expected 10, got " + result2;
+        }
+
+        // Test 3: Chained pipeline
+        var result3 = 2 |> double |> add(_, 1);
+        if (result3 != 5) {
+            throw "Test 3 failed: expected 5, got " + result3;
+        }
+
+        // Test 4: String pipeline
+        var result4 = "hello" |> toUpper;
+        if (result4 != "HELLO") {
+            throw "Test 4 failed: expected HELLO, got " + result4;
+        }
+
+        trace("All simple pipeline tests passed!");
+    }
+
+    static function double(x: Int): Int {
+        return x * 2;
+    }
+
+    static function add(a: Int, b: Int): Int {
+        return a + b;
+    }
+
+    static function toUpper(s: String): String {
+        return s.toUpperCase();
+    }
+}

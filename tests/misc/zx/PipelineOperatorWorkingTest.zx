@@ -1,0 +1,105 @@
+// Test file demonstrating all working pipeline operator features
+class PipelineOperatorWorkingTest {
+    static function main() {
+        trace("=== Pipeline Operator Working Features Test ===");
+        
+        // Test 1: Basic pipeline without placeholders
+        trace("\n1. Basic pipeline without placeholders:");
+        var result1 = 5 |> double;
+        trace("5 |> double = " + result1); // Expected: 10
+        assert(result1 == 10, "Basic pipeline failed");
+        
+        // Test 2: Pipeline with single placeholder
+        trace("\n2. Pipeline with single placeholder:");
+        var result2 = 3 |> add(_, 7);
+        trace("3 |> add(_, 7) = " + result2); // Expected: 10
+        assert(result2 == 10, "Single placeholder failed");
+        
+        // Test 3: Pipeline with placeholder in different position
+        trace("\n3. Pipeline with placeholder in different position:");
+        var result3 = 2 |> subtract(10, _);
+        trace("2 |> subtract(10, _) = " + result3); // Expected: 8 (10 - 2)
+        assert(result3 == 8, "Placeholder position failed");
+        
+        // Test 4: Multiple placeholders (same value)
+        trace("\n4. Multiple placeholders:");
+        var result4 = 5 |> addSelf(_, _);
+        trace("5 |> addSelf(_, _) = " + result4); // Expected: 10 (5 + 5)
+        assert(result4 == 10, "Multiple placeholders failed");
+        
+        // Test 5: String pipeline
+        trace("\n5. String pipeline:");
+        var result5 = "hello" |> toUpperCase;
+        trace("\"hello\" |> toUpperCase = " + result5); // Expected: "HELLO"
+        assert(result5 == "HELLO", "String pipeline failed");
+        
+        // Test 6: String pipeline with placeholder
+        trace("\n6. String pipeline with placeholder:");
+        var result6 = "world" |> concat("hello ", _);
+        trace("\"world\" |> concat(\"hello \", _) = " + result6); // Expected: "hello world"
+        assert(result6 == "hello world", "String placeholder failed");
+        
+        // Test 7: Complex expression as input
+        trace("\n7. Complex expression as input:");
+        var result7 = (3 + 2) |> double;
+        trace("(3 + 2) |> double = " + result7); // Expected: 10
+        assert(result7 == 10, "Complex expression failed");
+        
+        // Test 8: Pipeline with parentheses
+        trace("\n8. Pipeline with parentheses:");
+        var result8 = 4 |> (double(_) + 1);
+        trace("4 |> (double(_) + 1) = " + result8); // Expected: 9 ((4 * 2) + 1)
+        assert(result8 == 9, "Parentheses pipeline failed");
+        
+        // Test 9: Nested function calls with placeholder
+        trace("\n9. Nested function calls with placeholder:");
+        var result9 = 3 |> complexCall(_, double(_));
+        trace("3 |> complexCall(_, double(_)) = " + result9); // Expected: 9 (3 + (3 * 2))
+        assert(result9 == 9, "Nested calls failed");
+        
+        // Test 10: Workaround for chaining (manual)
+        trace("\n10. Manual chaining (workaround):");
+        var step1 = 2 |> double; // 4
+        var result10 = step1 |> add(_, 1); // 5
+        trace("step1 = 2 |> double = " + step1);
+        trace("result = step1 |> add(_, 1) = " + result10);
+        assert(result10 == 5, "Manual chaining failed");
+        
+        trace("\n=== All working features passed! ===");
+    }
+
+    // Helper functions
+    static function double(x: Int): Int {
+        return x * 2;
+    }
+
+    static function add(a: Int, b: Int): Int {
+        return a + b;
+    }
+
+    static function subtract(a: Int, b: Int): Int {
+        return a - b;
+    }
+
+    static function addSelf(a: Int, b: Int): Int {
+        return a + b;
+    }
+
+    static function complexCall(a: Int, b: Int): Int {
+        return a + b;
+    }
+
+    static function toUpperCase(s: String): String {
+        return s.toUpperCase();
+    }
+
+    static function concat(a: String, b: String): String {
+        return a + b;
+    }
+
+    static function assert(condition: Bool, message: String) {
+        if (!condition) {
+            throw new haxe.Exception("Assertion failed: " + message);
+        }
+    }
+}

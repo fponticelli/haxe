@@ -9,3 +9,17 @@
 -cp .
 -main ZxInteropTest
 -js zx-interop-test.js
+
+--next
+
+# Test simple pipeline operator functionality
+-cp .
+-main SimplePipelineTest
+-js simple-pipeline-test.js
+
+--next
+
+# Test comprehensive pipeline operator functionality
+-cp .
+-main PipelineOperatorTest
+-js pipeline-operator-test.js

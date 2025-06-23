@@ -219,6 +219,11 @@ enum Binop {
 		`??`
 	**/
 	OpNullCoal;
+
+	/**
+		`|>`
+	**/
+	OpPipe;
 }
 
 /**

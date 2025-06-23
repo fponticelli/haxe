@@ -357,6 +357,7 @@ class hxb_reader
 		| 21 -> OpArrow
 		| 22 -> OpIn
 		| 23 -> OpNullCoal
+		| 24 -> OpPipe
 		| _ -> OpAssignOp (self#get_binop (i - 30))
 
 	method get_unop i = match i with
